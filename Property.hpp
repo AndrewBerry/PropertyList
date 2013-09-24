@@ -8,7 +8,7 @@ class BaseProperty {
     friend class PropertyList;
 
 public:
-                        BaseProperty( const std::string& a_identifier);
+                        BaseProperty( const std::string& a_identifier, const type_info* a_type );
     virtual             ~BaseProperty();
 
     const std::string&  GetIdentifier() const;
@@ -16,9 +16,12 @@ public:
 protected:
     BaseProperty* const GetNext() const;
     void                SetNext( BaseProperty* a_next );
+    const type_info*    GetType() const;
 
 private:
     std::string         m_identifier;
+    const type_info*    m_type;
+
     BaseProperty*       m_next;
 
 };
@@ -28,29 +31,17 @@ template < class T >
 class Property : public BaseProperty {
 public:
                         Property( const std::string& a_identifier, const T& a_data ) :
-                            BaseProperty( a_identifier ),
-                            m_data( a_data ),
-                            m_type( &typeid( T ) ) {};
+                            BaseProperty( a_identifier, &typeid( T ) ),
+                            m_data( a_data ) {};
                         
                         ~Property() {};
 
-    const T*            Get() const;
+    const T&            Get() const { return m_data; };
     void                Set( const T& a_data ) { m_data = a_data; };
 
 private:
     T                   m_data;
-    const type_info*    m_type;
 
-};
-
-// ----------------------------------------------------------------------------
-template < class T >
-const T* Property<T>::Get() const {
-    if ( *m_type == typeid( T ) ) {
-        return &m_data;
-    };
-
-    return nullptr;
 };
 
 // ----------------------------------------------------------------------------
@@ -76,7 +67,7 @@ template < class T >
 const T* PropertyList::Get( const std::string& a_identifier ) {
     Property< T >* prop = Search< T >( a_identifier );
     if ( prop != nullptr ) {
-        return prop->Get();
+        return &prop->Get();
     };
 
     return nullptr;
@@ -103,13 +94,13 @@ void PropertyList::Set( const std::string& a_identifier, const T& a_data ) {
 // ----------------------------------------------------------------------------
 template < class T >
 Property< T >* PropertyList::Search( const std::string& a_identifier ) {
-    Property< T >* node = ( Property< T >* ) m_head;
+    BaseProperty* node = m_head;
     while ( node != nullptr ) {
-        if ( node->GetIdentifier() == a_identifier ) {
-            return node;
+        if ( node->GetIdentifier() == a_identifier && node->GetType() == &typeid( T ) ) {
+            return static_cast< Property< T >* >( node );
         };
 
-        node = ( Property< T >* ) node->GetNext();
+        node = node->GetNext();
     };
 
     return nullptr;

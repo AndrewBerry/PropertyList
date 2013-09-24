@@ -1,9 +1,10 @@
 #include "Property.hpp"
 
 // ----------------------------------------------------------------------------
-BaseProperty::BaseProperty( const std::string& a_identifier ) :
+BaseProperty::BaseProperty( const std::string& a_identifier, const type_info* a_type ) :
     m_identifier( a_identifier ),
-    m_next( nullptr )
+    m_next( nullptr ),
+    m_type( a_type )
 {
     
 };
@@ -22,6 +23,10 @@ BaseProperty* const BaseProperty::GetNext() const {
 
 void BaseProperty::SetNext( BaseProperty* a_next ) {
     m_next = a_next;
+};
+
+const type_info* BaseProperty::GetType() const {
+    return m_type;
 };
 
 // ----------------------------------------------------------------------------

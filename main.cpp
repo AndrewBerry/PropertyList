@@ -3,7 +3,7 @@
 
 int main() {
     PropertyList properties;
-
+    
     properties.Set< std::string >( "name", "Jane" );
     properties.Set< int >( "age", 20 );
     properties.Set< float >( "height", 170.45f );
