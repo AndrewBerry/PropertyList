@@ -2,6 +2,7 @@
 #define PROPERTY_HPP
 
 #include <string>
+#include <sstream>
 
 // ----------------------------------------------------------------------------
 class BaseProperty {
@@ -29,16 +30,28 @@ class Property : public BaseProperty {
 public:
                         Property( const std::string& a_identifier, const T& a_data ) :
                             BaseProperty( a_identifier ),
-                            m_data( a_data ) {};
+                            m_data( a_data ),
+                            m_type( &typeid( T ) ) {};
                         
                         ~Property() {};
 
-    const T&            Get() const { return m_data; };
+    const T*            Get() const;
     void                Set( const T& a_data ) { m_data = a_data; };
 
 private:
     T                   m_data;
+    const type_info*    m_type;
 
+};
+
+// ----------------------------------------------------------------------------
+template < class T >
+const T* Property<T>::Get() const {
+    if ( *m_type == typeid( T ) ) {
+        return &m_data;
+    };
+
+    return nullptr;
 };
 
 // ----------------------------------------------------------------------------
@@ -64,7 +77,7 @@ template < class T >
 const T* PropertyList::Get( const std::string& a_identifier ) {
     Property< T >* prop = Search< T >( a_identifier );
     if ( prop != nullptr ) {
-        return &prop->Get();
+        return prop->Get();
     };
 
     return nullptr;
