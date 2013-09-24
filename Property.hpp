@@ -2,7 +2,6 @@
 #define PROPERTY_HPP
 
 #include <string>
-#include <sstream>
 
 // ----------------------------------------------------------------------------
 class BaseProperty {
