@@ -1,32 +1,24 @@
 #include <iostream>
-#include "Property.hpp"
+#include "PropertyList.hpp"
 
 int main() {
     PropertyList properties;
-    
-    properties.Set< std::string >( "name", "Jane" );
-    properties.Set< int >( "age", 20 );
-    properties.Set< float >( "height", 170.45f );
 
-    auto name = properties.Get< std::string >( "name" );
-    auto age = properties.Get< int >( "age" );
-    auto height = properties.Get< float >( "height" );
+    properties.Set< int >( "test_int1", 137 );
+    properties.Set< float >( "test_float1", 13.03f );
 
-    if ( name != nullptr ) {
-        std::cout << *name << '\n';
+    int* test_int1 = properties.Get< int >( "test_int1" );
+    float* test_float1 = properties.Get< float >( "test_float1" );
+    int* test_float2 = properties.Get< int >( "test_float1" );
+
+    if ( test_int1 != nullptr ) {
+        std::cout << *test_int1 << '\n';
     };
-    if ( age != nullptr ) {
-        std::cout << *age << '\n';
+    if ( test_float1 != nullptr ) {
+        std::cout << *test_float1 << '\n';
     };
-    if ( height != nullptr ) {
-        std::cout << *height << '\n';
-    };
-    
-    std::cout << "\n\n";
-    properties.Set< std::string >( "name", "John" );
-    name = properties.Get< std::string >( "name" );
-    if ( name != nullptr ) {
-        std::cout << *name << '\n';
+    if ( test_float2 != nullptr ) {
+        std::cout << *test_float2 << '\n';
     };
 
     std::cin.get();
